@@ -73,6 +73,35 @@ function createCommentElement(comment, mode) {
             <p>${comment.comment}</p>
         `;
     }
+    else if (mode === "serverSanitization") {
+
+    // Backend already sanitized the HTML.
+    // Sanitize it again before DOM insertion.
+
+    const name = document.createElement("h3");
+    name.textContent = comment.name;
+
+    const message = document.createElement("div");
+
+    const cleanHTML = DOMPurify.sanitize(
+        comment.comment,
+        {
+            ALLOWED_TAGS: [
+                "p",
+                "b",
+                "strong",
+                "i",
+                "em"
+            ],
+            ALLOWED_ATTR: []
+        }
+    );
+
+    message.innerHTML = cleanHTML;
+
+    commentElement.append(name, message);
+}
+
 
     return commentElement;
 }
@@ -83,9 +112,15 @@ async function loadComments() {
     const mode = renderMode.value;
 
     // Use server-encoded response only for method 5
-    const endpoint = mode === "serverEncoding"
-        ? "/comments/encoded"
-        : "/comments";
+    let endpoint = "/comments";
+
+if (mode === "serverEncoding") {
+    endpoint = "/comments/encoded";
+}
+
+if (mode === "serverSanitization") {
+    endpoint = "/comments/sanitized";
+}
 
     const response = await fetch(endpoint);
 
@@ -112,7 +147,11 @@ commentForm.addEventListener("submit", async (event) => {
 
     const formData = new FormData(commentForm);
 
-    const response = await fetch("/comments", {
+    const endpoint = renderMode.value === "serverSanitization"
+    ? "/comments/sanitized"
+    : "/comments";
+
+const response = await fetch(endpoint, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded"
