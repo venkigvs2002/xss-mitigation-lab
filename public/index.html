@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stored XSS Mitigation Lab</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Security Blog</h1>
+    <p>Stored XSS Mitigation Laboratory</p>
+</header>
+
+<main>
+
+    <article>
+        <h2>Understanding Cross-Site Scripting</h2>
+        <p>
+            Cross-Site Scripting allows attackers to inject
+            content that may execute in another user's browser.
+        </p>
+    </article>
+
+    <section class="comments-section">
+
+        <h2>Comments</h2>
+
+        <label for="renderMode">Select XSS mitigation:</label>
+
+        <select id="renderMode">
+            <option value="textContent">1. textContent</option>
+            <option value="innerText">2. innerText</option>
+            <option value="htmlEncoding">3. HTML Entity Encoding (client)</option>
+            <option value="dompurify">4. DOMPurify</option>
+            <option value="serverEncoding">5. Server-side Output Encoding</option>
+        </select>
+
+        <div id="comments"></div>
+
+        <h2>Post a comment</h2>
+
+        <form id="commentForm">
+
+            <input
+                type="text"
+                name="name"
+                placeholder="Your name"
+                required
+            >
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Your email"
+                required
+            >
+
+            <textarea
+                name="comment"
+                placeholder="Write your comment..."
+                required
+            ></textarea>
+
+            <button type="submit">Post Comment</button>
+
+        </form>
+
+        <p id="status"></p>
+
+    </section>
+
+</main>
+
+<script src="/purify.min.js"></script>
+<script src="/script.js"></script>
+
+</body>
+</html>
